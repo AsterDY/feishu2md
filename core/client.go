@@ -7,6 +7,8 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
+	"sync"
 	"time"
 
 	"github.com/chyroc/lark"
@@ -16,14 +18,35 @@ type Client struct {
 	larkClient *lark.Lark
 }
 
+var clients sync.Map
+
 func NewClient(appID, appSecret, domain string) *Client {
-	return &Client{
-		larkClient: lark.New(
-			lark.WithAppCredential(appID, appSecret),
-			lark.WithOpenBaseURL("https://open."+domain),
-			lark.WithTimeout(60*time.Second),
-		),
+	h := strings.Join([]string{appID, appSecret, domain}, "-")
+	if cli, ok := clients.Load(h); ok {
+		return cli.(*Client)
+	} else {
+		cli := &Client{
+			larkClient: lark.New(
+				lark.WithAppCredential(appID, appSecret),
+				lark.WithOpenBaseURL("https://open."+domain),
+				lark.WithTimeout(60*time.Second),
+			),
+		}
+		clients.Store(h, cli)
+		return cli
 	}
+}
+
+func (c *Client) GetImage(ctx context.Context, imgToken, imgDir string) (Image, error) {
+	resp, _, err := c.larkClient.Drive.DownloadDriveMedia(ctx, &lark.DownloadDriveMediaReq{
+		FileToken: imgToken,
+	})
+	if err != nil {
+		return Image{}, err
+	}
+	fileext := filepath.Ext(resp.Filename)
+	filename := fmt.Sprintf("%s/%s%s", imgDir, imgToken, fileext)
+	return Image{filename, resp.File}, nil
 }
 
 func (c *Client) DownloadImage(ctx context.Context, imgToken, imgDir string) (string, error) {
