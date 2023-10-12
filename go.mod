@@ -32,6 +32,7 @@ require (
 	github.com/gopherjs/gopherjs v0.0.0-20210619142842-05447a1fa367 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
+	github.com/larksuite/oapi-sdk-go/v3 v3.0.30 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect

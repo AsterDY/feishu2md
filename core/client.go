@@ -46,10 +46,10 @@ func (c *Client) GetImage(ctx context.Context, imgToken, imgDir string) (Image, 
 	}
 	fileext := filepath.Ext(resp.Filename)
 	filename := fmt.Sprintf("%s/%s%s", imgDir, imgToken, fileext)
-	return Image{filename, resp.File}, nil
+	return Image{filename, resp.File, ""}, nil
 }
 
-func (c *Client) DownloadImage(ctx context.Context, imgToken, imgDir string) (string, error) {
+func (c *Client) DownloadSource(ctx context.Context, imgToken, imgDir string) (string, error) {
 	resp, _, err := c.larkClient.Drive.DownloadDriveMedia(ctx, &lark.DownloadDriveMediaReq{
 		FileToken: imgToken,
 	})

@@ -54,7 +54,7 @@ func handleUrlArgument(url string) error {
 
 	if !config.Output.SkipImgDownload {
 		for _, imgToken := range parser.ImgTokens {
-			localLink, err := client.DownloadImage(ctx, imgToken, config.Output.ImageDir)
+			localLink, err := client.DownloadSource(ctx, imgToken, config.Output.ImageDir)
 			if err != nil {
 				return err
 			}

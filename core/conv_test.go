@@ -15,6 +15,7 @@
 package core_test
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
@@ -22,7 +23,7 @@ import (
 	"github.com/Wsine/feishu2md/core"
 )
 
-func TestCoveFromUrl(t *testing.T) {
+func TestConvFromUrl(t *testing.T) {
 	appid, apist := getIdAndSecretFromEnv()
 	conf := &core.Config{
 		Feishu: core.FeishuConfig{
@@ -37,7 +38,8 @@ func TestCoveFromUrl(t *testing.T) {
 		},
 	}
 	url := os.Getenv("TEST_DOC")
-	rets, err := core.CovertFromUrl(conf, url)
+	oclient := core.NewOClient(conf.Feishu.AppId, conf.Feishu.AppSecret)
+	rets, err := core.CovertFromUrl(context.Background(), oclient, conf, url)
 	if err != nil {
 		t.Fatal(err)
 	}
